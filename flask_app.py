@@ -7,11 +7,9 @@ import os
 
 app = Flask(__name__)
 
-# --- CONFIGURATION ---
 TARGET_API = "https://api.open-meteo.com/v1/forecast?latitude=48.85&longitude=2.35&current_weather=true"
 DB_PATH = os.path.join(os.path.dirname(__file__), 'database.db')
 
-# --- LOGIQUE DE STOCKAGE (SQLite) ---
 def init_db():
     """Crée la table des résultats si elle n'existe pas"""
     conn = sqlite3.connect(DB_PATH)
@@ -39,10 +37,9 @@ def save_run(status, latency, temp, passed_count):
     conn.commit()
     conn.close()
 
-# Initialisation de la base au démarrage
+
 init_db()
 
-# --- MOTEUR DE TESTS (RUNNER) ---
 def run_api_tests():
     start_time = time.time()
     response = None
@@ -61,14 +58,14 @@ def run_api_tests():
     latency = round((time.time() - start_time) * 1000, 2)
     data = response.json()
     
-    # 2. Plan de tests : 6 assertions (Section 4A du barème)
+   
     tests = [
-        response.status_code == 200,                                    # Test 1: Code HTTP 200
-        "application/json" in response.headers.get("Content-Type", ""), # Test 2: Format JSON
-        "current_weather" in data,                                      # Test 3: Champ présent
-        isinstance(data.get("current_weather", {}).get("temperature"), (int, float)), # Test 4: Type Temp
-        "windspeed" in data.get("current_weather", {}),                 # Test 5: Champ Vent
-        latency < 1000                                                  # Test 6: Performance < 1s
+        response.status_code == 200,                                   
+        "application/json" in response.headers.get("Content-Type", ""), 
+        "current_weather" in data,                                      
+        isinstance(data.get("current_weather", {}).get("temperature"), (int, float)),
+        "windspeed" in data.get("current_weather", {}),                 
+        latency < 1000                                                  
     ]
     
     passed_count = sum(tests)
@@ -83,7 +80,7 @@ def run_api_tests():
         "passed": passed_count
     }
 
-# --- ROUTES FLASK ---
+
 
 @app.route("/")
 def index():

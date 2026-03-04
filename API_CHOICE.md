@@ -1,8 +1,8 @@
 # API Choice
 
-- Étudiant :
-- API choisie :
-- URL base :
+- Étudiant : Guilliane DIEPPOIS
+- API choisie : MEteo
+- URL base : https://api.open-meteo.com/v1/
 - Documentation officielle / README :
 - Auth : None / API Key / OAuth
 - Endpoints testés :

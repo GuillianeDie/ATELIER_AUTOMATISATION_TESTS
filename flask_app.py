@@ -133,5 +133,16 @@ def dashboard():
     # On passe 'history' au template sous le nom 'runs'
     return render_template('dashboard.html', runs=history)
 
+@app.route("/health")
+def health():
+    """Vérifie que l'application et la base de données sont OK"""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        conn.execute('SELECT 1')
+        conn.close()
+        return jsonify({"status": "healthy", "database": "connected"}), 200
+    except Exception as e:
+        return jsonify({"status": "unhealthy", "error": str(e)}), 500
+
 if __name__ == "__main__":
     app.run(debug=True)

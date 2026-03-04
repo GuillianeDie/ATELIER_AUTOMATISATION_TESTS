@@ -123,20 +123,15 @@ def status_page():
 
 @app.route("/dashboard")
 def dashboard():
-    """Dashboard affichant l'historique des 10 derniers runs"""
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    cursor.execute('SELECT timestamp, status, latency_ms, temp_value, tests_passed FROM runs ORDER BY id DESC LIMIT 10')
+    # On récupère les 10 derniers runs
+    cursor.execute('SELECT * FROM runs ORDER BY id DESC LIMIT 10')
     history = cursor.fetchall()
     conn.close()
     
-    # Génération d'un tableau HTML simple sans emojis
-    html = "<h1>Dashboard de Monitoring API</h1><table border='1'><tr>"
-    html += "<th>Date</th><th>Statut</th><th>Latence (ms)</th><th>Temp (C)</th><th>Tests Reussis</th></tr>"
-    for run in history:
-        html += f"<tr><td>{run[0]}</td><td>{run[1]}</td><td>{run[2]}</td><td>{run[3]}</td><td>{run[4]}/6</td></tr>"
-    html += "</table><p><a href='/run'>Lancer un nouveau test</a></p>"
-    return html
+    # On passe 'history' au template sous le nom 'runs'
+    return render_template('dashboard.html', runs=history)
 
 if __name__ == "__main__":
     app.run(debug=True)
